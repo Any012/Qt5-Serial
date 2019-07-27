@@ -239,16 +239,25 @@ void Serial::switchSerialPort()
 void Serial::readData()
 {
     const QByteArray data = serialPort->readAll();
+
     if(rbtnRecvHex->isChecked())
     {
-        // QString display;
-        txtRecv->insertPlainText(data);
-        QScrollBar *scroll = txtRecv->verticalScrollBar();
-        // scroll->setSliderPosition(scroll->maximum());
-        scroll->setValue(scroll->maximum());
-        recvCount += data.length();
-        ltxtRecvCount->setText(QString::number(recvCount));
+        QString temp;
+        for(int i=0; i<data.size(); i++)
+        {
+            temp.sprintf("%02X ", (unsigned char)data.at(i));
+            txtRecv->insertPlainText(temp);
+        }
     }
+    else
+    {
+        txtRecv->insertPlainText(data);
+    }
+    
+    QScrollBar *scroll = txtRecv->verticalScrollBar();
+    scroll->setValue(scroll->maximum());
+    recvCount += data.length();
+    ltxtRecvCount->setText(QString::number(recvCount));
 }
 
 void Serial::writeData()
